@@ -1,6 +1,6 @@
 # UbuntuFocal64-VagrantPlugins
 
-[![vagrant](https://img.shields.io/badge/vagrant-v2.2.19-blue.svg??style=plastic&logo=Vagrant&logoColor=blue)](https://www.vagrantup.com/)
+[![vagrant](https://img.shields.io/badge/vagrant-v2.2.19-blue.svg?style=plastic&logo=Vagrant&logoColor=blue)](https://www.vagrantup.com/)
 [![virtualbox](https://img.shields.io/badge/virtualbox-v6.1.32-red.svg?style=plastic&logo=VirtualBox)](https://www.virtualbox.org/wiki/VirtualBox)
 
 
