@@ -1,0 +1,5 @@
+.DS_Store
+.vagrant
+repositorio/**
+init.sh
+keys.sh
