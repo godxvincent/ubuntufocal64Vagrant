@@ -21,6 +21,7 @@ Vagrant.configure(2) do |config|
   # config.vm.provision :shell, path: "keys.sh"
   # config.vm.provision :shell, path: "init.sh"
   # config.vm.network :forwarded_port, guest: 31761, host: 4567
+  config.vm.network :forwarded_port, guest: 8080, host: 8080
 
   # Configuracion SSH
   #config.ssh.username = 'vagrant'

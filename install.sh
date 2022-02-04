@@ -13,3 +13,5 @@ apt-get install -y npm
 
 # Instala GIT
 apt-get install -y git
+apt-get install python3-pip
+apt-get install python3.8-venv
