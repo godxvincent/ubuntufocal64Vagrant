@@ -1,0 +1,4 @@
+#.pylintrc
+[MASTER]
+
+disable=missing-module-docstring, import-error

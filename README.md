@@ -23,36 +23,47 @@ Destruir la maquina
 
 * Instalación de airflow
 
-
-```pip install "apache-airflow[celery]==2.2.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.2.3/constraints-3.8.txt"```
+    ```pip install "apache-airflow[celery]==2.2.3" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.2.3/constraints-3.8.txt"```
 
 * Iniciar los archivos base de configuración de airflow (ejecutese solo la primera vez)
 
-`airflow init db`
+    `airflow init db`
 
 * Iniciar el servidor web
 
-`airflow webserver`
+    `airflow webserver`
 
 * Crear usuario administrador
 
-`airflow users create -u admin -f Ricardo -l Vargas -r Admin -e godxvincent@gmail.com`
+    `airflow users create -u admin -f Ricardo -l Vargas -r Admin -e godxvincent@gmail.com`
 
 **Otros comandos utiles**
 
 * subir versión archivos inicializacion.
 
-`airflow db upgrade`
+    `airflow db upgrade`
 
 * Re inicia la configuración de airflow (resetea toda la metadata)
 
-`airflow db reset`
+    `airflow db reset`
 
 * Encargado de agendar los data pipelines de las tareas.
-`airflow scheduler`
+    
+    `airflow scheduler`
 
 * Listar todos los dags que hay (en este caso los de ejemplo que trae)
-`airflow dags list`
+
+    `airflow dags list`
+
+* Probando localmente que el test esta funcionando correctamente.
+
+    `airflow tasks test (name_dag) (name_task) (start_date)`
+    `airflow tasks test user_processing creating_table 2022-02-04`
+
+* Listar todos los providers instalados
+
+    `airflow providers list`
+
 
 ## Conceptos de airflow
 ### Tipos de operadores
@@ -62,5 +73,8 @@ Destruir la maquina
 > * Bash Operators 
 >
 > `Transfer Operators:` Corresponde a operadores que **mueven** información de una fuente a un destino.
->
+> 
 > `Sensor Operators:` Corresponde a operadores que **esperan** para que una condición se de.
+
+## Algunos comandos de trabajo sobre la terminal de la maquina.
+`cp repositorio/dags/* airflow/dags/ -r`
