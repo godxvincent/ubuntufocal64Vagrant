@@ -10,10 +10,10 @@ from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 
 # Todas las tasks/operators will follow this parameters.
-default_args = {"start_date": datetime.today()}
+default_args = {"start_date": datetime(2022, 2, 1)}
 
 CREATE_TABLE_QUERY = """
-    CREATE TABLE users (
+    CREATE TABLE IF NOT EXISTS users (
         email TEXT PRIMARY KEY, 
         firstname TEXT NOT NULL,
         lastname TEXT NOT NULL,
@@ -80,4 +80,12 @@ with DAG(
     storign_user = BashOperator(
         task_id="storing_user",
         bash_command=f"echo -e '.separator ','\n.import {FILE_PATH} users' | sqlite3 ~/airflow/airflow.db",
+    )
+
+    (
+        creating_table
+        >> is_api_available
+        >> extracting_user
+        >> processing_users
+        >> storign_user
     )
