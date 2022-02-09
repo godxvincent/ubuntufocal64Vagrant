@@ -22,6 +22,7 @@ Vagrant.configure(2) do |config|
   # config.vm.provision :shell, path: "init.sh"
   # config.vm.network :forwarded_port, guest: 31761, host: 4567
   config.vm.network :forwarded_port, guest: 8080, host: 8080
+  config.vm.network :forwarded_port, guest: 5555, host: 5555
 
   # Configuracion SSH
   #config.ssh.username = 'vagrant'
@@ -77,6 +78,13 @@ Vagrant.configure(2) do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    # vb.gui = true
+  
+    # Customize the amount of memory on the VM:
+    vb.memory = "3072"
+  end
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at
