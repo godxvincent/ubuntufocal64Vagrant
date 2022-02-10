@@ -4,3 +4,4 @@ repositorio/*rsa*
 init.sh
 keys.sh
 *temp*
+*.idea*
