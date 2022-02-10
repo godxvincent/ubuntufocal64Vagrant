@@ -2,11 +2,14 @@ from datetime import datetime
 
 from airflow.models import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.subdag import SubDagOperator
+from subdags.subdag_parallel_dag import subdag_parallel_dag
 
 default_args = {"start_date": datetime(2022, 2, 1)}
+MAIN_DAG = "parallel_dag"
 
 with DAG(
-    "parallel_dag",
+    MAIN_DAG,
     schedule_interval="@daily",
     default_args=default_args,
     catchup=False,
@@ -15,18 +18,19 @@ with DAG(
         task_id="task_1",
         bash_command='sleep 3 | echo "task 1 executed"',
     )
-    task_2 = BashOperator(
-        task_id="task_2",
-        bash_command='sleep 3 | echo "task 2 executed"',
+
+    SUBDAG_PROCESSING = "processing_tasks"
+    processing = SubDagOperator(
+        task_id=SUBDAG_PROCESSING,
+        subdag=subdag_parallel_dag(
+            MAIN_DAG, SUBDAG_PROCESSING, default_args=default_args
+        ),
     )
-    task_3 = BashOperator(
-        task_id="task_3",
-        bash_command='sleep 3 | echo "task 3 executed"',
-    )
+
     task_4 = BashOperator(
         task_id="task_4",
         bash_command='sleep 3 | echo "task 4 executed"',
     )
 
-    task_1.set_downstream([task_2, task_3])
-    task_4.set_upstream([task_2, task_3])
+    task_1.set_downstream(processing)
+    task_4.set_upstream(processing)

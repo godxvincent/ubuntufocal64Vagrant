@@ -141,6 +141,10 @@ with DAG(
 
 - **max_active_runs_per_dag** Controla el número maximo de dags que pueden estar corriendo en paralelo.
 
+### SubDags
+
+Los subdags son dags que son ejecutados desde uno de nivel superior. No se recomiendan por que por default esos son ejecutados de forma secuencial (sequential executor), incluso si se establece que el tipo de executore es uno distinto.
+
 ## Algunos comandos de trabajo sobre la terminal de la maquina.
 
 `cp ~/repositorio/dags/* ~/airflow/dags/ -r | rm -rf ~/airflow/dags/__pycache__/`
@@ -149,3 +153,5 @@ with DAG(
 
 - How I can set up my local environment to deploy my dags.
 - How to run a diagram with an specific date?
+- How can I see the subdag without run the main dag?
+- There's a way to see how a dag was during a moment!? I mean, the dag had a shape and then and updating was done, can I see in airflow console how was my dag before the update?

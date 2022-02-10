@@ -24,6 +24,7 @@ CREATE_TABLE_QUERY = """
 """
 
 FILE_PATH = "/tmp/processed_users.csv"
+BASH_COMMAND = f"echo -e '.separator ','\n.import {FILE_PATH} users' | sqlite3 ~/airflow/airflow.db"
 
 
 def _processing_users(ti):
@@ -77,10 +78,7 @@ with DAG(
         task_id="processing_users", python_callable=_processing_users
     )
 
-    storign_user = BashOperator(
-        task_id="storing_user",
-        bash_command=f"echo -e '.separator ','\n.import {FILE_PATH} users' | sqlite3 ~/airflow/airflow.db",
-    )
+    storign_user = BashOperator(task_id="storing_user", bash_command=BASH_COMMAND)
 
     (
         creating_table
