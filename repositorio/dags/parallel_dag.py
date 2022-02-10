@@ -1,10 +1,12 @@
 from datetime import datetime
 
+# from subdags.subdag_parallel_dag import subdag_parallel_dag
+
 from airflow.models import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.subdag import SubDagOperator
-from subdags.subdag_parallel_dag import subdag_parallel_dag
 from airflow.utils.task_group import TaskGroup
+
+# from airflow.operators.subdag import SubDagOperator
 
 default_args = {"start_date": datetime(2022, 2, 1)}
 MAIN_DAG = "parallel_dag"

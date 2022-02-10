@@ -145,6 +145,59 @@ with DAG(
 
 Los subdags son dags que son ejecutados desde uno de nivel superior. No se recomiendan por que por default esos son ejecutados de forma secuencial (sequential executor), incluso si se establece que el tipo de executore es uno distinto.
 
+### XCOM
+
+Obedece a la sigla de Cross Communication y basicamente es una forma de intercambiar pequeñas cantidades de datos entre tasks. La información a intercambiar se guarda como parte de la metadata en la base de datos de airflow. Lo anterior significa que hay limitaciones de almacenadmiento los cuales se listan a continuación
+
+- sqlite = 2gb
+- postgres = 1gb
+- mysql = 64Kb
+
+Por default cuando una función (o en el caso de los operadores de python), en la base de datos queda guardado con un identificador que siempre será `return_value`. Sin embargo si se quiere enviar un valor usando un identificador propio se debe hacer uso de la función `xcom_push`
+
+```python
+# Esto hace que retorne un valor y sea legible como un Xcom pero queda guardado como un return_value
+def _training_model():
+    accuracy = uniform(0.1, 10.0)
+    print(f"model's accuracy: {accuracy}")
+    return accuracy
+
+# De esta otra manera se puede especificar el valor de la llave con el que se desea guardar la información.
+def _training_model(task_instance):
+    accuracy = uniform(0.1, 10.0)
+    print(f"model's accuracy: {accuracy}")
+    task_instance.xcom_push(key="model_accuracy", value=accuracy)
+```
+
+Para recuperar el valor se hace uso de la variable de task_instance y se ejecuta el metodo xcom_pull el cual recibe dos parametros el id de la llave a buscar y el listado de tareas de las cuales se espera recuperar la información.
+
+```python
+def _choose_best_model(task_instance):
+    print("choose best model")
+    accuracies = task_instance.xcom_pull(
+        key="model_accuracy",
+        task_ids=[
+            "processing_tasks.training_model_a"
+            "processing_tasks.training_model_b"
+            "processing_tasks.training_model_c"
+        ],
+    )
+    print(accuracies)
+```
+
+El parametro `do_xcom_push` de la mayoría de operadores permite configurar si una task dejará en el xcom alguna salida, por default siempre deja algo.
+
+```python
+downloading_data = BashOperator(
+        task_id="downloading_data", bash_command="sleep 3", do_xcom_push=False
+    )
+```
+
+**(Documentación de Airflow)** Clases de Airflow
+
+- [BaseOperator](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator)
+- [BashOperator](https://airflow.apache.org/docs/apache-airflow/stable/_modules/airflow/operators/bash.html#BashOperator)
+
 ## Algunos comandos de trabajo sobre la terminal de la maquina.
 
 `cp ~/repositorio/dags/* ~/airflow/dags/ -r | rm -rf ~/airflow/dags/__pycache__/`

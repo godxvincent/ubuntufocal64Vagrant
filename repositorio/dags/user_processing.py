@@ -27,12 +27,12 @@ FILE_PATH = "/tmp/processed_users.csv"
 BASH_COMMAND = f"echo -e '.separator ','\n.import {FILE_PATH} users' | sqlite3 ~/airflow/airflow.db"
 
 
-def _processing_users(ti):
-    users = ti.xcom_pull(task_ids=["extracting_user"])
+def _processing_users(task_instance):
+    users = task_instance.xcom_pull(task_ids=["extracting_user"])
     print("Esto es lo que llega al pipeline")
     print(users)
     print("Fin del comunicado")
-    if not len(users) or "results" not in users[0]:
+    if (not users and len(users) > 0) or "results" not in users[0]:
         raise ValueError
     else:
         user = users[0]["results"][0]
@@ -61,6 +61,7 @@ with DAG(
         task_id="creating_table", sqlite_conn_id="db_sqlite", sql=CREATE_TABLE_QUERY
     )
 
+    # Conection https://randomuser.me/
     is_api_available = HttpSensor(
         task_id="is_api_available", http_conn_id="users_api", endpoint="api/"
     )
@@ -80,10 +81,7 @@ with DAG(
 
     storign_user = BashOperator(task_id="storing_user", bash_command=BASH_COMMAND)
 
-    (
-        creating_table
-        >> is_api_available
-        >> extracting_user
-        >> processing_users
-        >> storign_user
-    )
+    creating_table.set_downstream(is_api_available)
+    is_api_available.set_downstream(extracting_user)
+    extracting_user.set_downstream(processing_users)
+    processing_users.set_downstream(storign_user)
