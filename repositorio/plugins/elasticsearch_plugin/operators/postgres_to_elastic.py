@@ -35,6 +35,8 @@ class PostgresToElasticOperator(BaseOperator):
         Metodo para ejecutar la lógica para cargar la carga de postgres hacia
         elastic search
         """
+        # Se de este print solo para que no salte el link
+        # Falta validar en la documentación este context en que casos se usan.
         print(context)
         elastic_search_connection = ElasticHook(self.elastic_conn_id)
         postgres_connection = PostgresHook(postgres_conn_id=self.postgres_conn_id)

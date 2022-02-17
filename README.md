@@ -227,3 +227,9 @@ La palabra `connection` es el nombre del indice en el que se desea hacer la busq
 - How to run a diagram with an specific date?
 - How can I see the subdag without run the main dag?
 - There's a way to see how a dag was during a moment!? I mean, the dag had a shape and then and updating was done, can I see in airflow console how was my dag before the update?
+
+## Ejecutando airflow desde docker
+
+Link con documentación de airflow https://airflow.apache.org/docs/apache-airflow/2.2.3/start/docker.html#docker-compose-yaml
+
+`docker-compose -f docker-compose.yaml up -d`
