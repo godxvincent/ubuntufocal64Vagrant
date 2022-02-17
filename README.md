@@ -198,9 +198,28 @@ downloading_data = BashOperator(
 - [BaseOperator](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator)
 - [BashOperator](https://airflow.apache.org/docs/apache-airflow/stable/_modules/airflow/operators/bash.html#BashOperator)
 
+### Plugins
+
+Plugins son una forma de customizar o crear operadores propios. También es posible agregar views a las instancias de airflow, basicamente se pueden agregar vistas de controles externos. Para interactuar con soluciones de terceros (third party tool) se hace uso de los hooks.
+
+Para configurar los plugins se debe copiar el codigo del plugin en la carpeta `~/airflow/plugins`.
+
+Para crear un plugin hay que crear una clase que herede de la clase `AirflowPluginClass` y dentro de esa clase se incluyen las vistas, hooks y operators en si mismo (Esto hasta la antes de la versión 2.0 de airflow).
+En las versiones recientes la clase `AirflowPluginClass` solo se usa para personalizar las vistas. Y en cuanto a los hooks y operadores solo se deben crear los modules en python dentro del folder y ya esta.
+
+Los plugin son de naturaleza lazy, esto significa que cada que se carga un plugin se debe reiniciar la instancia de AirFlow (aunque esto se puede ajustar con un parametros en la configuración)
+
+Guia de como generar un hook, si o si es necesario crear la clase.
+https://airflow.apache.org/docs/apache-airflow/2.2.3/plugins.html#interface
+
 ## Algunos comandos de trabajo sobre la terminal de la maquina.
 
 `cp ~/repositorio/dags/* ~/airflow/dags/ -r | rm -rf ~/airflow/dags/__pycache__/`
+`cp ~/repositorio/plugins/* ~/airflow/plugins/ -r | rm -rf ~/airflow/plugins/__pycache__/`
+
+La palabra `connection` es el nombre del indice en el que se desea hacer la busqueda.
+
+`curl -X GET 'http://localhost:9200/connection/\_search' -H "Content-type: application/json" -d '{"query":{"match_all":{}}}'`
 
 ## Questions I have regarding airflow.
 

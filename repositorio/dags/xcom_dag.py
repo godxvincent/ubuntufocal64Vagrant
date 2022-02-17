@@ -3,7 +3,8 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.utils.task_group import TaskGroup
 
 
@@ -28,6 +29,12 @@ def _choose_best_model(task_instance):
     )
     print("Este texto es de ayuda")
     print(accuracies)
+    # Es posible retornar más de un id de una tarea para que sean ejecutadas,
+    # solo basta con devolver un arreglo.
+    if max(accuracies) > 8:
+        return "accurate"
+
+    return "inaccurate"
 
 
 with DAG(
@@ -52,7 +59,17 @@ with DAG(
             task_id="training_model_c", python_callable=_training_model
         )
 
-    choose_model = PythonOperator(task_id="task_4", python_callable=_choose_best_model)
+    choose_model = BranchPythonOperator(
+        task_id="choose_model", python_callable=_choose_best_model
+    )
+
+    accurate = DummyOperator(task_id="accurate")
+    inaccurate = DummyOperator(task_id="inaccurate")
+
+    # https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator
+    sorting = DummyOperator(task_id="sorting", trigger_rule="one_success")
 
     downloading_data.set_downstream(processing_tasks)
     processing_tasks.set_downstream(choose_model)
+    choose_model.set_downstream([accurate, inaccurate])
+    sorting.set_upstream([accurate, inaccurate])

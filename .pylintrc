@@ -1,4 +1,4 @@
 #.pylintrc
 [MASTER]
 
-disable=missing-module-docstring, import-error
+disable=missing-module-docstring, import-error, keyword-arg-before-vararg
